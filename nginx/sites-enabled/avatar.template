@@ -1,0 +1,15 @@
+server {
+    listen 80;
+    server_name a.${PS_SERVER_DOMAIN}
+    root /app/data/avatars # TODO: What do I do here?
+
+    error_page 403 404 =200 /default;
+    error_page 500 /default;
+
+    location / {
+        add_header cache-control "public, max-age=7200";
+        add_header content-type "image/png";
+
+        try_files $uri $uri/ $uri.png =404;
+    }
+}

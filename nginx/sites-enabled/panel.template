@@ -1,0 +1,9 @@
+server {
+    listen 80;
+    server_name old.${PS_SERVER_DOMAIN};
+
+    location / {
+        proxy_set_header Host $host;
+        proxy_pass ${PANEL_INTERNAL_URL};
+    }
+}

@@ -1,0 +1,29 @@
+server {
+    listen 80;
+    server_name ${PS_SERVER_DOMAIN};
+
+    location / {
+        proxy_set_header Host $host;
+        proxy_pass ${FRONTEND_INTERNAL_URL};
+    }
+
+    location ~ ^/ss/(.*) {
+        root /app/data/screenshots;
+        add_header content-type "image/png";
+        try_files /$1 =404;
+    }
+
+    location /api {
+        proxy_set_header Host $host;
+        proxy_pass ${API_INTERNAL_URL};
+    }
+
+    location /api/v1/profile-history /api/v1/statistics/homepage {
+        proxy_set_header Host $host;
+        proxy_pass ${STATISTICS_SERVICE_INTERNAL_URL};
+    }
+
+    location ~ ^/d/(.*)  {
+        return 301 ${PS_DOWNLOAD_MIRROR}/$1;
+    }
+}
