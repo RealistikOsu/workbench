@@ -1,0 +1,24 @@
+[submodule "USSR"]
+	path = USSR
+	url = https://github.com/RealistikOsu/USSR
+[submodule "RealistikPanel"]
+	path = RealistikPanel
+	url = https://github.com/RealistikOsu/RealistikPanel
+[submodule "RealistikAPI"]
+	path = RealistikAPI
+	url = https://github.com/RealistikOsu/RealistikAPI
+[submodule "frontend"]
+	path = frontend
+	url = https://github.com/RealistikOsu/frontend
+[submodule "pep.py"]
+	path = pep.py
+	url = https://github.com/RealistikOsu/pep.py
+[submodule "BeatmapsService"]
+	path = BeatmapsService
+	url = https://github.com/RealistikOsu/BeatmapsService
+[submodule "performance-service"]
+	path = performance-service
+	url = https://github.com/RealistikOsu/performance-service
+[submodule "rosu-donor-bot"]
+	path = rosu-donor-bot
+	url = https://github.com/RealistikOsu/rosu-donor-bot
