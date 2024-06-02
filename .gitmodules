@@ -22,3 +22,6 @@
 [submodule "rosu-donor-bot"]
 	path = repos/donor_bot
 	url = https://github.com/RealistikOsu/rosu-donor-bot
+[submodule "repos/statistics_service"]
+	path = repos/statistics_service
+	url = https://github.com/RealistikOsu/RealistikStatistik
