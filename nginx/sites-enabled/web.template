@@ -1,0 +1,21 @@
+server {
+    server_name osu.${PS_SERVER_DOMAIN}
+
+    location ~ ^/d/(.*) {
+        return 301 https://${PS_SERVER_DOMAIN}/$1;
+    }
+
+    location /web/ {
+        proxy_pass ${USSR_INTERNAL_URL};
+    }
+
+    location ~ ^/ss/(.*) {
+        root /app/data/screenshots;
+        add_header content-type "image/png";
+        try_files /$1 =404;
+    }
+
+    location / {
+        return 301 https://${PS_SERVER_DOMAIN}/;
+    }
+}
