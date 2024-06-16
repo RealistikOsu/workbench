@@ -7,12 +7,6 @@ server {
         proxy_pass ${FRONTEND_INTERNAL_URL};
     }
 
-    location ~ ^/ss/(.*) {
-        root /app/data/screenshots;
-        add_header content-type "image/png";
-        try_files /$1 =404;
-    }
-
     location /api {
         proxy_set_header Host $host;
         proxy_pass ${API_INTERNAL_URL};
