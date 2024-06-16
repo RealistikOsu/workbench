@@ -8,3 +8,6 @@ nginx:
 update:
 	git submodule update --recursive --remote --merge
 
+
+migrate:
+	docker compose up migrator

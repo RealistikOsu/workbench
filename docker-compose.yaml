@@ -34,5 +34,19 @@ services:
       - RABBITMQ_DEFAULT_USER=${RABBITMQ_USER}
       - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASSWORD}
 
+  # Jobs
+  migrator:
+    image: migrator:latest
+    restart: no
+    depends_on:
+      - mysql
+    volumes:
+    # So we don't have to rebuild the image per migration.
+      - ./migrator/migrations:/app/migrations:ro
+
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_TCP_PORT=${MYSQL_PORT}
   # Services.
   
