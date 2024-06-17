@@ -34,6 +34,17 @@ services:
       - RABBITMQ_DEFAULT_USER=${RABBITMQ_USER}
       - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASSWORD}
 
+  nginx:
+    image: rosu-nginx:latest
+    restart: always
+    ports:
+      - "80:${NGINX_PORT}"
+    env_file:
+      - .env
+    volumes:
+      - "${DATA_SCREENSHOTS_PATH}:/app/data/screenshots:ro"
+      - "${DATA_AVATARS_PATH}:/app/data/avatars:ro"
+
   # Jobs
   migrator:
     image: migrator:latest
@@ -43,10 +54,107 @@ services:
     volumes:
     # So we don't have to rebuild the image per migration.
       - ./migrator/migrations:/app/migrations:ro
-
     environment:
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
       - MYSQL_DATABASE=${MYSQL_DATABASE}
       - MYSQL_TCP_PORT=${MYSQL_PORT}
-  # Services.
+  
+  # RealistikOsu Services.
+  peppy:
+    image: peppy:latest
+    restart: always
+    ports:
+      - "${PEPPY_PORT}:${PEPPY_PORT}"
+    volumes:
+      - "${DATA_MAPS_PATH}:/data/maps"
+    environment:
+      - HTTP_PORT=${PEPPY_PORT}
+      - HTTP_ADDRESS=0.0.0.0
+      - HTTP_THREAD_COUNT=${PEPPY_HTTP_THREAD_COUNT}
+      - HTTP_USING_CLOUDFLARE=${PS_USING_CLOUDFLARE}
+      
+      - MYSQL_HOST=mysql
+      - MYSQL_PORT=${MYSQL_PORT}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_POOL_SIZE=${PEPPY_MYSQL_POOL_SIZE}
+
+      - REDIS_HOST=redis
+      - REDIS_PORT=${REDIS_PORT}
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - REDIS_DB=${REDIS_DATABASE}
+
+      - DISCORD_RANKED_WEBHOOK_URL=${PS_DISCORD_RANKED_WEBHOOK}
+
+      - PS_NAME=${PS_SERVER_NAME}
+      - PS_DOMAIN=${PS_SERVER_DOMAIN}
+      - PS_BOT_USERNAME=${PS_SERVER_BOT_NAME}
+      - PS_BOT_USER_ID=${PS_SERVER_BOT_USER_ID}
+      - PS_MINIMUM_CLIENT_YEAR=${PEPPY_MINIMUM_CLIENT_YEAR}
+      - PS_ENABLE_PY_COMMAND=${PEPPY_PYTHON_COMMAND_ENABLE}
+      - PS_PY_COMMAND_WHITELIST=${PEPPY_PYTHON_COMMAND_WHITELIST}
+
+      - DATA_BEATMAP_DIRECTORY=/data/maps
+      - IP2LOCATION_API_KEY=${IP2LOCATION_API_KEY}
+    depends_on:
+      - mysql
+      - redis
+
+  ussr:
+    image: ussr:latest
+    restart: always
+    ports:
+      - "${USSR_PORT}=${USSR_PORT}"
+    environment:
+      - HTTP_PORT=${USSR_PORT}
+      
+      - MYSQL_HOST=mysql
+      - MYSQL_PORT=${MYSQL_PORT}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+
+      - REDIS_HOST=redis
+      - REDIS_PORT=${REDIS_PORT}
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - REDIS_DB=${REDIS_DATABASE}
+
+      - DATA_BEATMAP_DIRECTORY=${DATA_BEATMAP_DIRECTORY}
+      - DATA_SCREENSHOT_DIRECTORY=${DATA_SCREENSHOT_DIRECTORY}
+      - DATA_REPLAY_DIRECTORY=${DATA_REPLAY_DIRECTORY}
+
+      - API_KEYS_POOL=${OSU_API_KEY_POOL}
+      - API_FALLBACK_URL=${USSR_API_FALLBACK_URL}
+      - API_OSU_FALLBACK_URL=${USSR_OSU_FALLBACK_URL}
+      - DIRECT_URL=${BEATMAP_SERVICE_INTERNAL_URL}:${BEATMAP_SERVICE_PORT}
+
+      - SRV_URL=${PS_SERVER_DOMAIN}
+      - SRV_NAME=${PS_SERVER_NAME}
+      - SRV_VERIFIED_BADGE=${PS_VERIFIED_BADGE_ID}
+      - BOT_USER_ID=${PS_SERVER_BOT_USER_ID}
+      - CUSTOM_CLIENTS=${USSR_ALLOW_CUSTOM_CLIENTS}
+
+      - DISCORD_FIRST_PLACE=${PS_DISCORD_FIRST_PLACE_WEBHOOK}
+      - DISCORD_ADMIN_HOOK=${PS_DISCORD_ADMIN_WEBHOOK}
+
+      - WS_WRITE_KEY=${USSR_WEBSOCKET_WRITE_KEY}
+
+      - PERFORMANCE_SERVICE_URL=${PERFROMANCE_SERVICE_INTERNAL_URL}:${PERFORMANCE_SERVICE_PORT}
+      
+      # TODO: we dont use these atm lol.
+      - S3_ENABLED=false
+      - S3_BUCKET=
+      - S3_REGION=
+      - S3_ENDPOINT=
+      - S3_ACCESS_KEY=
+      - S3_SECRET_KEY=
+
+      - MEILI_DIRECT=false
+      - MEILI_URL=
+      - MEILI_KEY=
+    
+    depends_on:
+      - mysql
+      - redis
   

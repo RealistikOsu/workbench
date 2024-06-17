@@ -6,7 +6,7 @@ server {
     }
 
     location /web/ {
-        proxy_pass ${USSR_INTERNAL_URL};
+        proxy_pass ${USSR_INTERNAL_URL}:${USSR_PORT};
     }
 
     location ~ ^/ss/(.*) {

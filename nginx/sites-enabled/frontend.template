@@ -4,17 +4,17 @@ server {
 
     location / {
         proxy_set_header Host $host;
-        proxy_pass ${FRONTEND_INTERNAL_URL};
+        proxy_pass ${FRONTEND_INTERNAL_URL}:${FRONTEND_PORT};
     }
 
     location /api {
         proxy_set_header Host $host;
-        proxy_pass ${API_INTERNAL_URL};
+        proxy_pass ${API_INTERNAL_URL}:${API_PORT};
     }
 
     location /api/v1/profile-history /api/v1/statistics/homepage {
         proxy_set_header Host $host;
-        proxy_pass ${STATISTICS_SERVICE_INTERNAL_URL};
+        proxy_pass ${STATISTICS_SERVICE_INTERNAL_URL}:${STATISTICS_SERVICE_PORT};
     }
 
     location ~ ^/d/(.*)  {
