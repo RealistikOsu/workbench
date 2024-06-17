@@ -120,9 +120,9 @@ services:
       - REDIS_PASSWORD=${REDIS_PASSWORD}
       - REDIS_DB=${REDIS_DATABASE}
 
-      - DATA_BEATMAP_DIRECTORY=${DATA_BEATMAP_DIRECTORY}
-      - DATA_SCREENSHOT_DIRECTORY=${DATA_SCREENSHOT_DIRECTORY}
-      - DATA_REPLAY_DIRECTORY=${DATA_REPLAY_DIRECTORY}
+      - DATA_BEATMAP_DIRECTORY=/data/maps
+      - DATA_SCREENSHOT_DIRECTORY=/data/screenshots
+      - DATA_REPLAY_DIRECTORY=/data/replays
 
       - API_KEYS_POOL=${OSU_API_KEY_POOL}
       - API_FALLBACK_URL=${USSR_API_FALLBACK_URL}
@@ -157,4 +157,9 @@ services:
     depends_on:
       - mysql
       - redis
+
+    volumes:
+      - ${DATA_REPLAYS_PATH}:/data/replays
+      - ${DATA_SCREENSHOTS_PATH}:/data/screenshots
+      - ${DATA_MAPS_PATH}:/data/maps
   
