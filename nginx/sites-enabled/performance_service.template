@@ -4,6 +4,6 @@ server {
 
     location / {
         proxy_set_header Host $host;
-        proxy_pass ${PERFROMANCE_SERVICE_INTERNAL_URL}:${PERFORMANCE_SERVICE_PORT};
+        proxy_pass ${PERFORMANCE_SERVICE_INTERNAL_URL}:${PERFORMANCE_SERVICE_PORT};
     }
 }

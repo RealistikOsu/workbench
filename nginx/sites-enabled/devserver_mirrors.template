@@ -10,11 +10,6 @@ server {
     server_name b.${PS_SERVER_DOMAIN};
     listen 80;
 
-    # Custom previews
-    #location ~ ^/preview/(.*).mp3 {
-    #    return 301 https://bms.ripple.gay/p/$1;
-    #}
-
     location / {
         return 301 https://b.ppy.sh$request_uri;
     }
