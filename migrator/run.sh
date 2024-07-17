@@ -3,7 +3,7 @@ set -euo pipefail
 
 MYSQL_DSN="mysql://root:${MYSQL_ROOT_PASSWORD}@tcp(mysql:${MYSQL_TCP_PORT})/${MYSQL_DATABASE}"
 
-echo "Ensuring the existence of table ${MYSQL_DATABASE}."
+echo "Ensuring the existence of database ${MYSQL_DATABASE}."
 
 mysql \
     --host=mysql \
