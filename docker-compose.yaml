@@ -67,6 +67,23 @@ services:
     volumes:
       - "${DATA_SCREENSHOTS_PATH}:/app/data/screenshots:ro"
       - "${DATA_AVATARS_PATH}:/app/data/avatars:ro"
+    depends_on:
+      peppy:
+        condition: service_healthy
+      ussr:
+        condition: service_healthy
+      api:
+        condition: service_healthy
+      frontend:
+        condition: service_healthy
+      panel:
+        condition: service_healthy
+      performance-service:
+        condition: service_healthy
+      statistics-service:
+        condition: service_healthy
+      beatmaps-service:
+        condition: service_healthy
 
   # Jobs
   migrator:
