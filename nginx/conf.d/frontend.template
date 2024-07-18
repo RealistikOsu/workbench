@@ -14,7 +14,13 @@ server {
         proxy_pass ${API_INTERNAL_URL}:${API_PORT};
     }
 
-    location /api/v1/profile-history /api/v1/statistics/homepage {
+    location ~ /api/v1/profile-history /api/v1/statistics/homepage {
+        proxy_set_header X-Forwarded-For $http_CF_Connecting_IP;
+        proxy_set_header Host $host;
+        proxy_pass ${STATISTICS_SERVICE_INTERNAL_URL}:${STATISTICS_SERVICE_PORT};
+    }
+
+    location ~ /api/v1/statistics/homepage {
         proxy_set_header X-Forwarded-For $http_CF_Connecting_IP;
         proxy_set_header Host $host;
         proxy_pass ${STATISTICS_SERVICE_INTERNAL_URL}:${STATISTICS_SERVICE_PORT};
