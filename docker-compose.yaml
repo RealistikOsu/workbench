@@ -506,6 +506,7 @@ services:
     environment:
       - APP_ENV=production
       - APP_COMPONENT=bot
+      - SERVICE_READINESS_TIMEOUT=${SERVICE_READINESS_TIMEOUT}
       - DISCORD_TOKEN=${DISCORD_TOKEN}
 
       - ROSU_DISCORD_GUILD_ID=${ROSU_DISCORD_GUILD_ID}
