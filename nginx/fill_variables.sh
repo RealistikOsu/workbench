@@ -3,7 +3,7 @@ set -euo pipefail
 
 echo "Filling site templates with environment veriables."
 
-for file in "/etc/nginx/sites-enabled"/*.template; do
+for file in "/etc/nginx/conf.d"/*.template; do
     [[ -e "$file" ]] || continue
 
     new_name="${file%.template}.conf"
