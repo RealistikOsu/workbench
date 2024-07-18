@@ -1,5 +1,5 @@
 server {
-    server_name osu.${PS_SERVER_DOMAIN}
+    server_name osu.${PS_SERVER_DOMAIN};
 
     location ~ ^/d/(.*) {
         return 301 https://${PS_SERVER_DOMAIN}/$1;
