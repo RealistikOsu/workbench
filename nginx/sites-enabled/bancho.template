@@ -1,0 +1,10 @@
+server {
+    listen 80;
+    server_name c.${PS_SERVER_DOMAIN} c4.${PS_SERVER_DOMAIN};
+
+    location / {
+        proxy_set_header X-Forwarded-For $http_CF_Connecting_IP;
+        proxy_set_header Host $host;
+        proxy_pass ${PEPPY_INTERNAL_URL}:${PEPPY_PORT};
+    }
+}
