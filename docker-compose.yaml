@@ -543,8 +543,6 @@ services:
         condition: service_healthy
       migrator:
         condition: service_completed_successfully
-    ports:
-      - "${STATISTICS_SERVICE_PORT}:${STATISTICS_SERVICE_PORT}"
     environment:
       - APP_ENV=production
       - APP_COMPONENT=online_cron
@@ -584,8 +582,6 @@ services:
         condition: service_healthy
       migrator:
         condition: service_completed_successfully
-    ports:
-      - "${STATISTICS_SERVICE_PORT}:${STATISTICS_SERVICE_PORT}"
     environment:
       - APP_ENV=production
       - APP_COMPONENT=profile_graphs_cron
@@ -625,8 +621,6 @@ services:
         condition: service_healthy
       migrator:
         condition: service_completed_successfully
-    ports:
-      - "${STATISTICS_SERVICE_PORT}:${STATISTICS_SERVICE_PORT}"
     environment:
       - APP_ENV=production
       - APP_COMPONENT=top_scores_cron
