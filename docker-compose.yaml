@@ -441,6 +441,12 @@ services:
         condition: service_healthy
       migrator:
         condition: service_completed_successfully
+      statistics-service-online-cron:
+        condition: service_started
+      statistics-service-profile-graphs-cron:
+        condition: service_started
+      statistics-service-top-scores-cron:
+        condition: service_started
     healthcheck:
       test: "curl --fail ${STATISTICS_SERVICE_INTERNAL_URL}:${STATISTICS_SERVICE_PORT}/api/v1/statistics/homepage"
       interval: 2s
@@ -527,3 +533,121 @@ services:
 
       - DB_POOL_MIN_SIZE=${DB_POOL_MIN_SIZE}
       - DB_POOL_MAX_SIZE=${DB_POOL_MAX_SIZE}
+    
+  # Daemons
+  statistics-service-online-cron:
+    image: statistics-service:latest
+    restart: always
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      migrator:
+        condition: service_completed_successfully
+    environment:
+      - APP_ENV=production
+      - APP_COMPONENT=online_cron
+      - APP_HOST=0.0.0.0
+      - APP_PORT=${STATISTICS_SERVICE_PORT}
+      
+
+      - WRITE_DB_HOST=mysql
+      - WRITE_DB_PORT=${MYSQL_PORT}
+      - WRITE_DB_USER=${MYSQL_USER}
+      - WRITE_DB_PASS=${MYSQL_PASSWORD}
+      - WRITE_DB_NAME=${MYSQL_DATABASE}
+
+      - READ_DB_HOST=mysql
+      - READ_DB_PORT=${MYSQL_PORT}
+      - READ_DB_USER=${MYSQL_USER}
+      - READ_DB_PASS=${MYSQL_PASSWORD}
+      - READ_DB_NAME=${MYSQL_DATABASE}
+
+      - REDIS_HOST=redis
+      - REDIS_PORT=${REDIS_PORT}
+
+      - SERVICE_READINESS_TIMEOUT=${SERVICE_READINESS_TIMEOUT}
+
+      - LOG_LEVEL=10
+
+      - DD_SERVICE=profile-history-service
+      - DD_ENV=production
+  
+  statistics-service-profile-graphs-cron:
+    image: statistics-service:latest
+    restart: always
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      migrator:
+        condition: service_completed_successfully
+    environment:
+      - APP_ENV=production
+      - APP_COMPONENT=profile_graphs_cron
+      - APP_HOST=0.0.0.0
+      - APP_PORT=${STATISTICS_SERVICE_PORT}
+      
+
+      - WRITE_DB_HOST=mysql
+      - WRITE_DB_PORT=${MYSQL_PORT}
+      - WRITE_DB_USER=${MYSQL_USER}
+      - WRITE_DB_PASS=${MYSQL_PASSWORD}
+      - WRITE_DB_NAME=${MYSQL_DATABASE}
+
+      - READ_DB_HOST=mysql
+      - READ_DB_PORT=${MYSQL_PORT}
+      - READ_DB_USER=${MYSQL_USER}
+      - READ_DB_PASS=${MYSQL_PASSWORD}
+      - READ_DB_NAME=${MYSQL_DATABASE}
+
+      - REDIS_HOST=redis
+      - REDIS_PORT=${REDIS_PORT}
+
+      - SERVICE_READINESS_TIMEOUT=${SERVICE_READINESS_TIMEOUT}
+
+      - LOG_LEVEL=10
+
+      - DD_SERVICE=profile-history-service
+      - DD_ENV=production
+
+  statistics-service-top-scores-cron:
+    image: statistics-service:latest
+    restart: always
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      migrator:
+        condition: service_completed_successfully
+    environment:
+      - APP_ENV=production
+      - APP_COMPONENT=top_scores_cron
+      - APP_HOST=0.0.0.0
+      - APP_PORT=${STATISTICS_SERVICE_PORT}
+      
+
+      - WRITE_DB_HOST=mysql
+      - WRITE_DB_PORT=${MYSQL_PORT}
+      - WRITE_DB_USER=${MYSQL_USER}
+      - WRITE_DB_PASS=${MYSQL_PASSWORD}
+      - WRITE_DB_NAME=${MYSQL_DATABASE}
+
+      - READ_DB_HOST=mysql
+      - READ_DB_PORT=${MYSQL_PORT}
+      - READ_DB_USER=${MYSQL_USER}
+      - READ_DB_PASS=${MYSQL_PASSWORD}
+      - READ_DB_NAME=${MYSQL_DATABASE}
+
+      - REDIS_HOST=redis
+      - REDIS_PORT=${REDIS_PORT}
+
+      - SERVICE_READINESS_TIMEOUT=${SERVICE_READINESS_TIMEOUT}
+
+      - LOG_LEVEL=10
+
+      - DD_SERVICE=profile-history-service
+      - DD_ENV=production
