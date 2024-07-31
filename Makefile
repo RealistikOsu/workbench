@@ -27,6 +27,9 @@ init:
 update:
 	git submodule update --recursive --remote --merge
 
+restart:
+	docker compose down && docker compose up -d
+
 # Deployment rules.
 migrate:
 	docker compose up migrator

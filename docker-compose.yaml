@@ -3,12 +3,6 @@ services:
   mysql:
     # Pin the version for mysql_native_password support.
     image: mysql:8.0.20
-    labels:
-      com.datadoghq.ad.init_configs: '[{}]'
-      com.datadoghq.ad.instances: '[{"host":"%%host%%", "port": "%%port%%"}]'
-      com.datadoghq.ad.logs: '[{"source": "mysql", "service": "mysql"}]'
-      com.datadoghq.tags.env: "production"
-      com.datadoghq.tags.service: "mysql"
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
@@ -21,6 +15,7 @@ services:
       - "${MYSQL_PORT}:${MYSQL_PORT}"
     volumes:
       - ${MYSQL_DATA_PATH}:/var/lib/mysql
+      - ./mysql/rosu.conf:/etc/mysql/conf.d/rosu.conf:ro
     healthcheck:
       test: "/usr/bin/mysql --user=$$MYSQL_USER --password=$$MYSQL_PASSWORD --execute \"SELECT 1;\""
       interval: 2s
