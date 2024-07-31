@@ -251,6 +251,12 @@ services:
       - MEILI_URL=
       - MEILI_KEY=
 
+      - DD_AGENT_HOST=host.docker.internal
+      - DD_SERVICE=ussr
+      - DD_ENV=production
+      - DD_LOGS_INJECTION=true
+      - DD_VERSION=4.0.0
+
     volumes:
       - ${DATA_REPLAYS_PATH}:/data/replays
       - ${DATA_SCREENSHOTS_PATH}:/data/screenshots
@@ -304,6 +310,12 @@ services:
       - REDIS_PORT=${REDIS_PORT}
       - REDIS_PASS=${REDIS_PASSWORD}
       - REDIS_DB=${REDIS_DATABASE}
+
+      - DD_AGENT_HOST=host.docker.internal
+      - DD_SERVICE=RippleAPI
+      - DD_ENV=production
+      - DD_LOGS_INJECTION=true
+      - DD_VERSION=4.0.0
     
   frontend:
     image: frontend:latest
@@ -379,6 +391,12 @@ services:
 
       - PAYPAL_EMAIL_ADDRESS=${PAYPAL_EMAIL_ADDRESS}
 
+      - DD_AGENT_HOST=host.docker.internal
+      - DD_SERVICE=peppy
+      - DD_ENV=frontend
+      - DD_LOGS_INJECTION=true
+      - DD_VERSION=4.0.0
+
     volumes:
       - ${DATA_AVATARS_PATH}:/data/avatars
 
@@ -433,7 +451,7 @@ services:
       - WEBHOOK_ADMIN_LOG=${PS_DISCORD_ADMIN_WEBHOOK}
 
       - DD_AGENT_HOST=host.docker.internal
-      - DD_SERVICE=panel
+      - DD_SERVICE=admin-panel
       - DD_ENV=production
       - DD_LOGS_INJECTION=true
       - DD_VERSION=4.0.0
@@ -444,9 +462,9 @@ services:
     labels:
       com.datadoghq.ad.init_configs: '[{}]'
       com.datadoghq.ad.instances: '[{"host":"%%host%%", "port": "%%port%%"}]'
-      com.datadoghq.ad.logs: '[{"source": "PerformanceService", "service": "PerformanceService"}]'
+      com.datadoghq.ad.logs: '[{"source": "performance-service", "service": "performance-service"}]'
       com.datadoghq.tags.env: "production"
-      com.datadoghq.tags.service: "PerformanceService"
+      com.datadoghq.tags.service: "performance-service"
     depends_on:
       mysql:
         condition: service_healthy
@@ -492,6 +510,11 @@ services:
 
       # Enable any/all prints.
       - RUST_LOG=performance_service=debug
+      - DD_AGENT_HOST=host.docker.internal
+      - DD_SERVICE=performance-service
+      - DD_ENV=production
+      - DD_LOGS_INJECTION=true
+      - DD_VERSION=4.0.0
 
     volumes:
       - ${DATA_MAPS_PATH}:/data/maps
@@ -553,8 +576,11 @@ services:
 
       - LOG_LEVEL=10
 
-      - DD_SERVICE=profile-history-service
+      - DD_AGENT_HOST=host.docker.internal
+      - DD_SERVICE=statistics-service
       - DD_ENV=production
+      - DD_LOGS_INJECTION=true
+      - DD_VERSION=4.0.0
 
   beatmaps-service:
     image: beatmaps-service:latest
@@ -585,6 +611,11 @@ services:
       - ClientSecret=${OSU_CLIENT_SECRET}
       # ?
       - RedisConnectionString=redis:${REDIS_PORT}
+      - DD_AGENT_HOST=host.docker.internal
+      - DD_SERVICE=beatmaps-service
+      - DD_ENV=production
+      - DD_LOGS_INJECTION=true
+      - DD_VERSION=4.0.0
 
   donor-bot:
     image: donor-bot:latest
@@ -622,6 +653,12 @@ services:
 
       - DB_POOL_MIN_SIZE=${DB_POOL_MIN_SIZE}
       - DB_POOL_MAX_SIZE=${DB_POOL_MAX_SIZE}
+
+      - DD_AGENT_HOST=host.docker.internal
+      - DD_SERVICE=donor-bot
+      - DD_ENV=production
+      - DD_LOGS_INJECTION=true
+      - DD_VERSION=4.0.0
     
   # Daemons
   statistics-service-online-cron:
@@ -666,8 +703,11 @@ services:
 
       - LOG_LEVEL=10
 
-      - DD_SERVICE=profile-history-service
+      - DD_AGENT_HOST=host.docker.internal
+      - DD_SERVICE=statistics-service-online
       - DD_ENV=production
+      - DD_LOGS_INJECTION=true
+      - DD_VERSION=4.0.0
   
   statistics-service-profile-graphs-cron:
     image: statistics-service:latest
@@ -713,8 +753,11 @@ services:
 
       - LOG_LEVEL=10
 
-      - DD_SERVICE=profile-history-service
+      - DD_AGENT_HOST=host.docker.internal
+      - DD_SERVICE=statistics-service-graphs
       - DD_ENV=production
+      - DD_LOGS_INJECTION=true
+      - DD_VERSION=4.0.0
 
   statistics-service-top-scores-cron:
     image: statistics-service:latest
@@ -760,5 +803,8 @@ services:
 
       - LOG_LEVEL=10
 
-      - DD_SERVICE=profile-history-service
+      - DD_AGENT_HOST=host.docker.internal
+      - DD_SERVICE=statistics-service-top
       - DD_ENV=production
+      - DD_LOGS_INJECTION=true
+      - DD_VERSION=4.0.0
