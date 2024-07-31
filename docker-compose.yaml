@@ -38,21 +38,6 @@ services:
       timeout: 20s
       retries: 10
 
-  rabbitmq:
-    image: rabbitmq
-    restart: always
-    ports:
-      # TODO: change default port through envs? Couldnt find it.
-      - "5672:5672"
-    environment:
-      - RABBITMQ_DEFAULT_USER=${RABBITMQ_USER}
-      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASSWORD}
-    healthcheck:
-      test: rabbitmq-diagnostics -q ping && rabbitmq-diagnostics -q status
-      interval: 2s
-      timeout: 20s
-      retries: 10
-
   nginx:
     image: rosu-nginx:latest
     restart: always
@@ -465,8 +450,6 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
-      rabbitmq:
-        condition: service_healthy
       migrator:
         condition: service_completed_successfully
     healthcheck:
@@ -489,11 +472,6 @@ services:
       - MYSQL_HOST=mysql
       - MYSQL_PORT=${MYSQL_PORT}
       - MYSQL_DATABASE=${MYSQL_DATABASE}
-
-      - AMQP_USER=${RABBITMQ_USER}
-      - AMQP_PASSWORD=${RABBITMQ_PASSWORD}
-      - AMQP_HOST=rabbitmq
-      - AMQP_PORT=5672
 
       - REDIS_USER=redis
       - REDIS_PASSWORD=${REDIS_PASSWORD}
