@@ -3,6 +3,12 @@ services:
   mysql:
     # Pin the version for mysql_native_password support.
     image: mysql:8.0.20
+    labels:
+      com.datadoghq.ad.init_configs: '[{}]'
+      com.datadoghq.ad.instances: '[{"host":"%%host%%", "port": "%%port%%"}]'
+      com.datadoghq.ad.logs: '[{"source": "mysql", "service": "mysql"}]'
+      com.datadoghq.tags.env: "production"
+      com.datadoghq.tags.service: "mysql"
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
@@ -16,7 +22,7 @@ services:
     volumes:
       - ${MYSQL_DATA_PATH}:/var/lib/mysql
     healthcheck:
-      test: "/usr/bin/mysql --user=$$MYSQL_USER --password=$$MYSQL_PASSWORD --execute \"SHOW DATABASES;\""
+      test: "/usr/bin/mysql --user=$$MYSQL_USER --password=$$MYSQL_PASSWORD --execute \"SELECT 1;\""
       interval: 2s
       timeout: 20s
       retries: 10
@@ -104,6 +110,12 @@ services:
   peppy:
     image: peppy:latest
     restart: always
+    labels:
+      com.datadoghq.ad.init_configs: '[{}]'
+      com.datadoghq.ad.instances: '[{"host":"%%host%%", "port": "%%port%%"}]'
+      com.datadoghq.ad.logs: '[{"source": "peppy", "service": "peppy"}]'
+      com.datadoghq.tags.env: "production"
+      com.datadoghq.tags.service: "peppy"
     depends_on:
       mysql:
         condition: service_healthy
@@ -120,6 +132,8 @@ services:
       - "${PEPPY_PORT}:${PEPPY_PORT}"
     volumes:
       - "${DATA_MAPS_PATH}:/data/maps"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     environment:
       - HTTP_PORT=${PEPPY_PORT}
       - HTTP_ADDRESS=0.0.0.0
@@ -155,9 +169,20 @@ services:
       - DATA_BEATMAP_DIRECTORY=/data/maps
       - IP2LOCATION_API_KEY=${IP2LOCATION_API_KEY}
 
+      - DD_AGENT_HOST=host.docker.internal
+      - DD_SERVICE=peppy
+      - DD_ENV=production
+      - DD_LOGS_INJECTION=true
+      - DD_VERSION=4.0.0
   ussr:
     image: ussr:latest
     restart: always
+    labels:
+      com.datadoghq.ad.init_configs: '[{}]'
+      com.datadoghq.ad.instances: '[{"host":"%%host%%", "port": "%%port%%"}]'
+      com.datadoghq.ad.logs: '[{"source": "ussr", "service": "ussr"}]'
+      com.datadoghq.tags.env: "production"
+      com.datadoghq.tags.service: "ussr"
     depends_on:
       mysql:
         condition: service_healthy
@@ -174,6 +199,8 @@ services:
       interval: 2s
       timeout: 20s
       retries: 10
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     environment:
       - HTTP_PORT=${USSR_PORT}
       
@@ -195,7 +222,7 @@ services:
       - API_KEYS_POOL=${OSU_API_KEY_POOL}
       - API_FALLBACK_URL=${USSR_API_FALLBACK_URL}
       - API_OSU_FALLBACK_URL=${USSR_OSU_FALLBACK_URL}
-      - DIRECT_URL=${BEATMAPS_SERVICE_INTERNAL_URL}:${BEATMAPS_SERVICE_PORT}
+      - DIRECT_URL=${BEATMAPS_SERVICE_INTERNAL_URL}:${BEATMAPS_SERVICE_PORT}/api
 
       - SERVICE_READINESS_TIMEOUT=${SERVICE_READINESS_TIMEOUT}
 
@@ -232,6 +259,12 @@ services:
   api:
     image: api:latest
     restart: always
+    labels:
+      com.datadoghq.ad.init_configs: '[{}]'
+      com.datadoghq.ad.instances: '[{"host":"%%host%%", "port": "%%port%%"}]'
+      com.datadoghq.ad.logs: '[{"source": "RippleAPI", "service": "RippleAPI"}]'
+      com.datadoghq.tags.env: "production"
+      com.datadoghq.tags.service: "RippleAPI"
     depends_on:
       mysql:
         condition: service_healthy
@@ -246,6 +279,8 @@ services:
       retries: 10
     ports:
       - "${API_PORT}:${API_PORT}"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     environment:
       - APP_COMPONENT=api
       - APP_ENV=production
@@ -273,6 +308,12 @@ services:
   frontend:
     image: frontend:latest
     restart: always
+    labels:
+      com.datadoghq.ad.init_configs: '[{}]'
+      com.datadoghq.ad.instances: '[{"host":"%%host%%", "port": "%%port%%"}]'
+      com.datadoghq.ad.logs: '[{"source": "frontend", "service": "frontend"}]'
+      com.datadoghq.tags.env: "production"
+      com.datadoghq.tags.service: "frontend"
     depends_on:
       mysql:
         condition: service_healthy
@@ -289,6 +330,8 @@ services:
       retries: 10
     ports:
       - "${FRONTEND_PORT}:${FRONTEND_PORT}"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     environment:
       - APP_COMPONENT=api
       - APP_ENV=production
@@ -342,6 +385,12 @@ services:
   panel:
     image: panel:latest
     restart: always
+    labels:
+      com.datadoghq.ad.init_configs: '[{}]'
+      com.datadoghq.ad.instances: '[{"host":"%%host%%", "port": "%%port%%"}]'
+      com.datadoghq.ad.logs: '[{"source": "admin-panel", "service": "admin-panel"}]'
+      com.datadoghq.tags.env: "production"
+      com.datadoghq.tags.service: "admin-panel"
     depends_on:
       mysql:
         condition: service_healthy
@@ -356,6 +405,8 @@ services:
       retries: 10
     ports:
       - "${PANEL_PORT}:${PANEL_PORT}"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     environment:
       - USE_ENV_CONFIG=true
       
@@ -375,15 +426,27 @@ services:
       - SRV_SUPPORTS_RELAX=true
       - SRV_SUPPORTS_AUTOPILOT=true
       - SRV_DONOR_BADGE=${PS_DONATOR_BADGE_ID}
-      - API_USSR_URL=${APP_USSR_URL}
-      - API_AVATAR_URL=${APP_AVATAR_URL}
-      - API_BANCHO_URL=${APP_BANCHO_URL}
+      - API_USSR_URL=${APP_USSR_URL}/
+      - API_AVATAR_URL=${APP_AVATAR_URL}/
+      - API_BANCHO_URL=${APP_BANCHO_URL}/
       - WEBHOOK_RANKED=${PS_DISCORD_RANKED_WEBHOOK}
       - WEBHOOK_ADMIN_LOG=${PS_DISCORD_ADMIN_WEBHOOK}
+
+      - DD_AGENT_HOST=host.docker.internal
+      - DD_SERVICE=panel
+      - DD_ENV=production
+      - DD_LOGS_INJECTION=true
+      - DD_VERSION=4.0.0
   
   performance-service:
     image: performance-service:latest
     restart: always
+    labels:
+      com.datadoghq.ad.init_configs: '[{}]'
+      com.datadoghq.ad.instances: '[{"host":"%%host%%", "port": "%%port%%"}]'
+      com.datadoghq.ad.logs: '[{"source": "PerformanceService", "service": "PerformanceService"}]'
+      com.datadoghq.tags.env: "production"
+      com.datadoghq.tags.service: "PerformanceService"
     depends_on:
       mysql:
         condition: service_healthy
@@ -400,6 +463,8 @@ services:
       retries: 10
     ports:
       - "${PERFORMANCE_SERVICE_PORT}:${PERFORMANCE_SERVICE_PORT}"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     environment:
       - APP_COMPONENT=api
       
@@ -434,6 +499,12 @@ services:
   statistics-service:
     image: statistics-service:latest
     restart: always
+    labels:
+      com.datadoghq.ad.init_configs: '[{}]'
+      com.datadoghq.ad.instances: '[{"host":"%%host%%", "port": "%%port%%"}]'
+      com.datadoghq.ad.logs: '[{"source": "StatisticsService", "service": "StatisticsService"}]'
+      com.datadoghq.tags.env: "production"
+      com.datadoghq.tags.service: "StatisticsService"
     depends_on:
       mysql:
         condition: service_healthy
@@ -454,6 +525,8 @@ services:
       retries: 10
     ports:
       - "${STATISTICS_SERVICE_PORT}:${STATISTICS_SERVICE_PORT}"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     environment:
       - APP_ENV=production
       - APP_COMPONENT=api
@@ -486,6 +559,12 @@ services:
   beatmaps-service:
     image: beatmaps-service:latest
     restart: always
+    labels:
+      com.datadoghq.ad.init_configs: '[{}]'
+      com.datadoghq.ad.instances: '[{"host":"%%host%%", "port": "%%port%%"}]'
+      com.datadoghq.ad.logs: '[{"source": "BeatmapsService", "service": "BeatmapsService"}]'
+      com.datadoghq.tags.env: "production"
+      com.datadoghq.tags.service: "BeatmapsService"
     depends_on:
       redis:
         condition: service_healthy
@@ -496,6 +575,8 @@ services:
       retries: 10
     ports:
       - "${BEATMAPS_SERVICE_PORT}:${BEATMAPS_SERVICE_PORT}"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     environment:
       - APP_ENV=production
       - ServiceHost=0.0.0.0
@@ -508,9 +589,17 @@ services:
   donor-bot:
     image: donor-bot:latest
     restart: always
+    labels:
+      com.datadoghq.ad.init_configs: '[{}]'
+      com.datadoghq.ad.instances: '[{"host":"%%host%%", "port": "%%port%%"}]'
+      com.datadoghq.ad.logs: '[{"source": "DonorBot", "service": "DonorBot"}]'
+      com.datadoghq.tags.env: "production"
+      com.datadoghq.tags.service: "DonorBot"
     depends_on:
       mysql:
         condition: service_healthy
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     environment:
       - APP_ENV=production
       - APP_COMPONENT=bot
@@ -538,6 +627,12 @@ services:
   statistics-service-online-cron:
     image: statistics-service:latest
     restart: always
+    labels:
+      com.datadoghq.ad.init_configs: '[{}]'
+      com.datadoghq.ad.instances: '[{"host":"%%host%%", "port": "%%port%%"}]'
+      com.datadoghq.ad.logs: '[{"source": "StatisticsServiceCron-Online", "service": "StatisticsServiceCron-Online"}]'
+      com.datadoghq.tags.env: "production"
+      com.datadoghq.tags.service: "StatisticsServiceCron-Online"
     depends_on:
       mysql:
         condition: service_healthy
@@ -577,6 +672,12 @@ services:
   statistics-service-profile-graphs-cron:
     image: statistics-service:latest
     restart: always
+    labels:
+      com.datadoghq.ad.init_configs: '[{}]'
+      com.datadoghq.ad.instances: '[{"host":"%%host%%", "port": "%%port%%"}]'
+      com.datadoghq.ad.logs: '[{"source": "StatisticsServiceCron-Graphs", "service": "StatisticsServiceCron-Graphs"}]'
+      com.datadoghq.tags.env: "production"
+      com.datadoghq.tags.service: "StatisticsServiceCron-Graphs"
     depends_on:
       mysql:
         condition: service_healthy
@@ -584,6 +685,8 @@ services:
         condition: service_healthy
       migrator:
         condition: service_completed_successfully
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     environment:
       - APP_ENV=production
       - APP_COMPONENT=profile_graphs_cron
@@ -616,6 +719,12 @@ services:
   statistics-service-top-scores-cron:
     image: statistics-service:latest
     restart: always
+    labels:
+      com.datadoghq.ad.init_configs: '[{}]'
+      com.datadoghq.ad.instances: '[{"host":"%%host%%", "port": "%%port%%"}]'
+      com.datadoghq.ad.logs: '[{"source": "StatisticsServiceCron-Top", "service": "StatisticsServiceCron-Top"}]'
+      com.datadoghq.tags.env: "production"
+      com.datadoghq.tags.service: "StatisticsServiceCron-Top"
     depends_on:
       mysql:
         condition: service_healthy
@@ -623,6 +732,8 @@ services:
         condition: service_healthy
       migrator:
         condition: service_completed_successfully
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     environment:
       - APP_ENV=production
       - APP_COMPONENT=top_scores_cron
