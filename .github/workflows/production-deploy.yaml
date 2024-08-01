@@ -13,6 +13,17 @@ jobs:
         shell: bash
         run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
         id: extract_branch
+
+      - name: Set up WireGuard
+        uses: egor-tensin/setup-wireguard@v1
+        with:
+          endpoint: '${{ secrets.WIREGUARD_ENDPOINT }}'
+          endpoint_public_key: '${{ secrets.WIREGUARD_PUBLIC_KEY }}'
+          ips: '${{ secrets.WIREGUARD_ADDRESS }}'
+          allowed_ips: '${{ secrets.WIREGUARD_ALLOWED_IPS }}'
+          private_key: '${{ secrets.WIREGUARD_PRIVATE_KEY }}'
+          preshared_key: '${{ secrets.WIREGUARD_PRESHARED_KEY }}'
+
       - name: Deploy new version on production
         uses: appleboy/ssh-action@v1.0.0
         with:
