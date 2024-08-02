@@ -30,6 +30,10 @@ update:
 restart:
 	docker compose down && docker compose up -d
 
+# fun trick!
+recalculate:
+	docker exec -it workbench-performance-service-1 target/release/performance-service --app-component deploy
+
 # Deployment rules.
 migrate:
 	docker compose up migrator
