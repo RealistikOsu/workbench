@@ -33,7 +33,7 @@ jobs:
           port: ${{ secrets.NEW_SSH_PORT }}
           script_stop: true
           script: |
-            cd /home/realistikous/workbench
+            cd /home/realistikosu/workbench
             git fetch origin
             git checkout origin/${{ steps.extract_branch.outputs.branch }}
             git pull origin ${{ steps.extract_branch.outputs.branch }}
