@@ -1,10 +1,4 @@
-server {
-    server_name osu.${PS_SERVER_DOMAIN};
-
-    location ~ ^/d/(.*) {
-        return 301 https://${PS_SERVER_DOMAIN}/d/$1;
-    }
-
+http {
     map $http_CF_Connecting_IP $web_server {
         "${USA_WHITELIST_IP}" 0;
         default 1;
@@ -25,19 +19,27 @@ server {
         1 "${USSR_INTERNAL_URL}:${USSR_PORT}";
     }
 
-    location /web/ {
-        proxy_set_header X-Forwarded-For $http_CF_Connecting_IP;
-        proxy_set_header Host $host;
-        proxy_pass $proxy_target;
-    }
+    server {
+        server_name osu.${PS_SERVER_DOMAIN};
 
-    location ~ ^/ss/(.*) {
-        root /app/data/screenshots;
-        add_header content-type "image/png";
-        try_files /$1 =404;
-    }
+        location ~ ^/d/(.*) {
+            return 301 https://${PS_SERVER_DOMAIN}/d/$1;
+        }
 
-    location / {
-        return 301 https://${PS_SERVER_DOMAIN}/;
+        location /web/ {
+            proxy_set_header X-Forwarded-For $http_CF_Connecting_IP;
+            proxy_set_header Host $host;
+            proxy_pass $proxy_target;
+        }
+
+        location ~ ^/ss/(.*) {
+            root /app/data/screenshots;
+            add_header content-type "image/png";
+            try_files /$1 =404;
+        }
+
+        location / {
+            return 301 https://${PS_SERVER_DOMAIN}/;
+        }
     }
 }
