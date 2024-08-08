@@ -3,6 +3,7 @@ services:
   mysql:
     # Pin the version for mysql_native_password support.
     image: mysql:8.0.20
+    platform: linux/amd64
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
@@ -290,7 +291,7 @@ services:
       - PATH_TO_REPLAYS=/data/replays
       - PATH_TO_SCREENSHOTS=/data/screenshots
 
-      - LOGGER_MIN_LEVEL=10
+      - LOGGER_MIN_LEVEL=3
 
       - SERVER_BASE_URL=${APP_BASE_URL}
       - SERVER_VERIFIED_BADGE_ID=${PS_VERIFIED_BADGE_ID}
