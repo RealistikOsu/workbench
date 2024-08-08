@@ -27,6 +27,8 @@ http {
 
     #gzip  on;
 
+    resolver 127.0.0.11
+
     map $http_CF_Connecting_IP $web_server {
         "${USA_WHITELIST_IP}" 0;
         default 1;
