@@ -10,7 +10,7 @@ server {
         proxy_set_header Host $host;
 
         map $http_CF_Connecting_IP $web_server {
-            ${USA_WHITELIST_IP} 0;
+            # ${USA_WHITELIST_IP} 0;
             default 1;
         }
 
