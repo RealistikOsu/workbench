@@ -12,5 +12,10 @@ for file in "/etc/nginx/conf.d"/*.template; do
     rm $file
 done
 
+# Don't forget nginx.template
+echo "Formatting nginx.template -> nginx.conf"
+envsubst "$(printf '${%s} ' $(env | cut -d'=' -f1))" < nginx.template > nginx.conf
+rm nginx.template
+
 echo "Starting nginx..."
 exec nginx -g "daemon off;"
