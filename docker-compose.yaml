@@ -261,11 +261,11 @@ services:
         condition: service_healthy
       migrator:
         condition: service_completed_successfully
-    healthcheck:
-      test: "curl --fail ${USA_INTERNAL_URL}:${USA_PORT}/health"
-      interval: 2s
-      timeout: 20s
-      retries: 10
+    # healthcheck:
+    #   test: "curl --fail ${USA_INTERNAL_URL}:${USA_PORT}/health"
+    #   interval: 2s
+    #   timeout: 20s
+    #   retries: 10
     ports:
       - "${USA_PORT}:${USA_PORT}"
     extra_hosts:
