@@ -25,3 +25,6 @@
 [submodule "repos/statistics_service"]
 	path = repos/statistics_service
 	url = https://github.com/RealistikOsu/RealistikStatistik
+[submodule "repos/usa"]
+	path = repos/usa
+	url = https://github.com/RealistikOsu/USA
