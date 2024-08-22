@@ -392,6 +392,7 @@ services:
       - APP_PORT=${FRONTEND_PORT}
       - APP_HANAYO_KEY=${HANAYO_KEY}
       - APP_INTERNAL_AVATARS_PATH=/data/avatars
+      - APP_INTERNAL_BANNERS_PATH=/data/banners
       - APP_BASE_URL=${APP_BASE_URL}
       - APP_AVATAR_URL=${APP_AVATAR_URL}
       - APP_API_URL=${APP_API_URL}
@@ -440,6 +441,9 @@ services:
 
     volumes:
       - ${DATA_AVATARS_PATH}:/data/avatars
+      - ${DATA_BANNERS_PATH}:/data/banners
+      # quick trick because im lazy
+      - ${DATA_BANNERS_PATH}:/srv/root/static/profbackgrounds:ro
 
   panel:
     image: panel:latest
