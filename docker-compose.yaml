@@ -846,3 +846,16 @@ services:
       - DD_ENV=production
       - DD_LOGS_INJECTION=true
       - DD_VERSION=4.0.0
+
+  # We don't talk about this.
+  crying-sigma:
+    image: crying-sigma:latest
+    restart: always
+    environment:
+      - APP_HOST=0.0.0.0
+      - APP_PORT=${CRYING_SIGMA_PORT}
+      - APP_DOMAIN=${PS_SERVER_DOMAIN}
+
+    volumes:
+      - ${DATA_CRYING_SIGMA_PATH}:/app/sigma/.data
+

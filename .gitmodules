@@ -28,3 +28,6 @@
 [submodule "repos/usa"]
 	path = repos/usa
 	url = https://github.com/RealistikOsu/USA
+[submodule "repos/crying-sigma"]
+	path = repos/crying_sigma
+	url = https://github.com/RealistikOsu/crying-sigma
