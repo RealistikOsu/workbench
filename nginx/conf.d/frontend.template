@@ -26,6 +26,13 @@ server {
         proxy_pass ${STATISTICS_SERVICE_INTERNAL_URL}:${STATISTICS_SERVICE_PORT};
     }
 
+    location ~ /api/v1/patcher {
+        proxy_set_header X-Forwarded-For $http_CF_Connecting_IP;
+        proxy_set_header Host $host;
+        add_header Access-Control-Allow-Origin *;
+        proxy_pass ${CRYING_SIGMA_INTERNAL_URL}:${CRYING_SIGMA_PORT};
+    }
+
     location ~ ^/d/(.*)  {
         return 301 ${PS_DOWNLOAD_MIRROR}/$1;
     }
