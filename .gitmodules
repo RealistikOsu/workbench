@@ -31,3 +31,6 @@
 [submodule "repos/crying-sigma"]
 	path = repos/crying_sigma
 	url = https://github.com/RealistikOsu/crying-sigma
+[submodule "repos/RealistikOsu.Cron"]
+	path = repos/RealistikOsu.Cron
+	url = https://github.com/realistikosu/RealistikOsu.Cron

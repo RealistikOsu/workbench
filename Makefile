@@ -20,6 +20,7 @@ build:
 	docker build ./repos/statistics_service -t statistics-service:latest
 	docker build ./repos/beatmaps_service -t beatmaps-service:latest
 	docker build ./repos/donor_bot -t donor-bot:latest
+	docker build ./repos/RealistikOsu.Cron -t rosu-cron:latest
 # we do not talk about this.
 	docker build ./repos/crying_sigma -t crying-sigma:latest
 

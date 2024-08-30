@@ -676,8 +676,8 @@ services:
       - DISCORD_TOKEN=${DISCORD_TOKEN}
 
       - ROSU_DISCORD_GUILD_ID=${ROSU_DISCORD_GUILD_ID}
-      - ROSU_DISCORD_DONOR_ROLE_ID=${ROSU_DISCORD_GUILD_ID}
-      - ROSU_DISCORD_ADMIN_LOGS_CHANNEL_ID=${ROSU_DISCORD_GUILD_ID}
+      - ROSU_DISCORD_DONOR_ROLE_ID=${ROSU_DISCORD_DONOR_ROLE_ID}
+      - ROSU_DISCORD_ADMIN_LOGS_CHANNEL_ID=${ROSU_DISCORD_ADMIN_LOGS_CHANNEL_ID}
 
       - READ_DB_SCHEME=mysql
       - READ_DB_USER=${MYSQL_USER}
@@ -846,6 +846,19 @@ services:
       - DD_ENV=production
       - DD_LOGS_INJECTION=true
       - DD_VERSION=4.0.0
+
+  cron:
+    image: rosu-cron:latest
+    restart: always
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      - FokaKey=abc
+      - BanchoApiUrl=${APP_BANCHO_URL}
+      - DonorBadgeId=${PS_DONATOR_BADGE_ID}
+      - ConnectionStrings__MysqlConnection=Server=mysql;Port=${MYSQL_PORT};Database=${MYSQL_DATABASE};User Id=${MYSQL_USER};Pwd=${MYSQL_PASSWORD}
+      - RedisUri=redis:${REDIS_PORT}
 
   # We don't talk about this.
   crying-sigma:
