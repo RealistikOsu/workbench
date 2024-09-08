@@ -18,6 +18,6 @@ server {
     }
 
     location / {
-        return 301 https://${PS_SERVER_DOMAIN}/;
+        return 301 https://${PS_SERVER_DOMAIN}$request_uri;
     }
 }
