@@ -74,6 +74,25 @@ services:
       usa: 
         condition: service_healthy
 
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    restart: always
+    ports:
+      - "${PHPMYADMIN_PORT}:80"
+    healthcheck:
+      test: "curl --fail http://phpmyadmin"
+      interval: 2s
+      timeout: 20s
+      retries: 10
+    environment:
+      - PMA_HOST=mysql
+      - PMA_PORT=${MYSQL_PORT}
+      - UPLOAD_LIMIT=1G
+      - HIDE_PHP_VERSION=true
+    depends_on:
+      mysql:
+        condition: service_healthy
+
   # Jobs
   migrator:
     image: migrator:latest
