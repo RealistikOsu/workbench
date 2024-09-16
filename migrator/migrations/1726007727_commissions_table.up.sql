@@ -1,4 +1,4 @@
-CREATE TABLE CommissionAssignment (
+CREATE TABLE commission_assignment (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
     commission VARCHAR(255) NOT NULL,
