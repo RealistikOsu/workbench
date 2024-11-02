@@ -23,6 +23,7 @@ build:
 	docker build ./repos/RealistikOsu.Cron -t rosu-cron:latest
 # we do not talk about this.
 	docker build ./repos/crying_sigma -t crying-sigma:latest
+	docker build ./repos/BeatmapSubmissionService/BeatmapSubmissionService -t bss:latest
 
 	docker build ./migrator -t migrator:latest
 

@@ -891,3 +891,19 @@ services:
     volumes:
       - ${DATA_CRYING_SIGMA_PATH}:/app/sigma/.data
 
+  bss:
+    image: bss:latest
+    restart: always
+    environment:
+      - APP_HOST=0.0.0.0
+      - APP_PORT=${CRYING_SIGMA_PORT}
+      
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_HOST=mysql
+      - MYSQL_PORT=${MYSQL_PORT}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+
+    volumes:
+      - ${DATA_BSS_PATH}:/data
+

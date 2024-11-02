@@ -1,6 +1,6 @@
 server {
     server_name osu.${PS_SERVER_DOMAIN};
-    client_max_body_size 5m;
+    client_max_body_size 100m;
 
     location ~ ^/d/(.*) {
         return 301 https://${PS_SERVER_DOMAIN}/d/$1;
@@ -10,6 +10,13 @@ server {
         proxy_set_header X-Forwarded-For $http_CF_Connecting_IP;
         proxy_set_header Host $host;
         proxy_pass $proxy_target;
+    }
+
+    location ~ ^/web/osu-osz2-bmsubmit-(getid|upload).php {
+        proxy_set_header X-Forwarded-For $http_CF_Connecting_IP;
+        proxy_set_header Host $host;
+        add_header Access-Control-Allow-Origin *;
+        proxy_pass ${BSS_INTERNAL_URL}:${BSS_INTERNAL_PORT};
     }
 
     location ~ ^/ss/(.*) {
