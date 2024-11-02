@@ -896,7 +896,7 @@ services:
     restart: always
     environment:
       - APP_HOST=0.0.0.0
-      - APP_PORT=${CRYING_SIGMA_PORT}
+      - APP_PORT=${BSS_PORT}
       
       - MYSQL_USER=${MYSQL_USER}
       - MYSQL_PASSWORD=${MYSQL_PASSWORD}
