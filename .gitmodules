@@ -34,3 +34,6 @@
 [submodule "repos/RealistikOsu.Cron"]
 	path = repos/RealistikOsu.Cron
 	url = https://github.com/realistikosu/RealistikOsu.Cron
+[submodule "repos/BeatmapSubmissionService"]
+	path = repos/BeatmapSubmissionService
+	url = https://github.com/RealistikOsu/BeatmapSubmissionService
