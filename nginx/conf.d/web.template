@@ -1,6 +1,6 @@
 server {
     server_name osu.${PS_SERVER_DOMAIN};
-    client_max_body_size 5m;
+    client_max_body_size 100m;
 
     location ~ ^/d/(.*) {
         return 301 https://${PS_SERVER_DOMAIN}/d/$1;
