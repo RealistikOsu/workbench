@@ -36,4 +36,10 @@ server {
     location ~ ^/d/(.*)  {
         return 301 ${PS_DOWNLOAD_MIRROR}/$1;
     }
+
+    location /web/replays {
+        proxy_set_header X-Forwarded-For $http_CF_Connecting_IP;
+        proxy_set_header Host $host;
+        proxy_pass $proxy_target;
+    }
 }
