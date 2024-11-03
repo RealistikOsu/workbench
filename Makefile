@@ -12,7 +12,7 @@ build:
 	docker build ./nginx -t rosu-nginx:latest
 	docker build ./repos/peppy -t peppy:latest
 	docker build ./repos/ussr -t ussr:latest
-	docker build ./repos/usa -t usa:latest
+	# docker build ./repos/usa -t usa:latest
 	docker build ./repos/api -t api:latest
 	docker build ./repos/frontend -t frontend:latest
 	docker build ./repos/panel -t panel:latest
@@ -23,7 +23,7 @@ build:
 	docker build ./repos/RealistikOsu.Cron -t rosu-cron:latest
 # we do not talk about this.
 	docker build ./repos/crying_sigma -t crying-sigma:latest
-	docker build ./repos/BeatmapSubmissionService/BeatmapSubmissionService -t bss:latest
+	docker build ./repos/BeatmapSubmissionService -t bss:latest
 
 	docker build ./migrator -t migrator:latest
 
