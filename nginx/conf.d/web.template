@@ -2,8 +2,21 @@ server {
     server_name osu.${PS_SERVER_DOMAIN};
     client_max_body_size 100m;
 
-    location ~ ^/d/(.*) {
-        return 301 https://${PS_SERVER_DOMAIN}/d/$1;
+    location ~ ^/d/([0-9]+) {
+        set $set_id $1;
+    
+        # Check if the number is not greater than 999999999
+        if ($set_id !~ "^[1-9][0-9]{9,}$") {
+            # Redirect to the download mirror
+            return 301 ${PS_DOWNLOAD_MIRROR}/$set_id;
+        }
+
+        root /app/data/osz;
+        add_header content-type "application/x-osu-beatmap-archive";
+        add_header content-disposition "attachment; filename=$set_id.osz";
+
+        # Try to download from our servers
+        try_files /$set_id.osz =404;
     }
 
     location /web/ {
