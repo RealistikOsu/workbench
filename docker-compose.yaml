@@ -52,9 +52,9 @@ services:
     env_file:
       - .env
     volumes:
-      - "${DATA_SCREENSHOTS_PATH}:/app/data/screenshots"
-      - "${DATA_AVATARS_PATH}:/app/data/avatars"
-      - "${DATA_BSS_PATH}/osz:/app/data/osz"
+      - "${DATA_SCREENSHOTS_PATH}:/app/data/screenshots:ro"
+      - "${DATA_AVATARS_PATH}:/app/data/avatars:ro"
+      - "${DATA_BSS_PATH}/osz:/app/data/osz:ro"
     depends_on:
       peppy:
         condition: service_healthy
