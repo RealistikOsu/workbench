@@ -11,7 +11,10 @@ server {
     listen 80;
 
     location / {
-        return 301 https://b.ppy.sh$request_uri;
+        proxy_set_header X-Forwarded-For $http_CF_Connecting_IP;
+        proxy_set_header Host $host;
+        add_header Access-Control-Allow-Origin *;
+        proxy_pass ${LAUGHING_SIGMA_INTERNAL_URL}:${LAUGHING_SIGMA_PORT};
     }
 }
 
@@ -21,5 +24,12 @@ server {
 
     location / {
         return 301 https://assets.ppy.sh$request_uri;
+    }
+
+    location ~ /beatmaps {
+        proxy_set_header X-Forwarded-For $http_CF_Connecting_IP;
+        proxy_set_header Host $host;
+        add_header Access-Control-Allow-Origin *;
+        proxy_pass ${LAUGHING_SIGMA_INTERNAL_URL}:${LAUGHING_SIGMA_PORT};
     }
 }
