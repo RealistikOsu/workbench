@@ -37,3 +37,6 @@
 [submodule "repos/BeatmapSubmissionService"]
 	path = repos/BeatmapSubmissionService
 	url = https://github.com/RealistikOsu/BeatmapSubmissionService
+[submodule "repos/laughing_sigma"]
+	path = repos/laughing_sigma
+	url = https://github.com/RealistikOsu/laughing-sigma

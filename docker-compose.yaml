@@ -879,18 +879,6 @@ services:
       - ConnectionStrings__MysqlConnection=Server=mysql;Port=${MYSQL_PORT};Database=${MYSQL_DATABASE};User Id=${MYSQL_USER};Pwd=${MYSQL_PASSWORD}
       - RedisUri=redis:${REDIS_PORT}
 
-  # We don't talk about this.
-  crying-sigma:
-    image: crying-sigma:latest
-    restart: always
-    environment:
-      - APP_HOST=0.0.0.0
-      - APP_PORT=${CRYING_SIGMA_PORT}
-      - APP_DOMAIN=${PS_SERVER_DOMAIN}
-
-    volumes:
-      - ${DATA_CRYING_SIGMA_PATH}:/app/sigma/.data
-
   bss:
     image: bss:latest
     restart: always
@@ -907,3 +895,26 @@ services:
     volumes:
       - ${DATA_BSS_PATH}:/data
       - ${DATA_MAPS_PATH}:/maps
+
+  # We don't talk about these.
+  crying-sigma:
+    image: crying-sigma:latest
+    restart: always
+    environment:
+      - APP_HOST=0.0.0.0
+      - APP_PORT=${CRYING_SIGMA_PORT}
+      - APP_DOMAIN=${PS_SERVER_DOMAIN}
+
+    volumes:
+      - ${DATA_CRYING_SIGMA_PATH}:/app/sigma/.data
+
+  laughing-sigma:
+    image: laughing-sigma:latest
+    restart: always
+    environment:
+      - APP_HOST=0.0.0.0
+      - APP_PORT=${LAUGHING_SIGMA_PORT}
+      - APP_DOMAIN=${PS_SERVER_DOMAIN}
+
+    volumes:
+      - ${DATA_BSS_PATH}:/data
