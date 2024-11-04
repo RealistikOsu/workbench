@@ -37,13 +37,13 @@ server {
         set $set_id $1;
     
         # Check if the number is greater than 999999999
-        if ($set_id ~ "^[1-9][0-9]{9,}$") {
-            # Serve from local storage
-            try_files /app/data/osz/$set_id.osz =404;
+        if ($set_id !~ "^[1-9][0-9]{9,}$") {
+            # Redirect to the download mirror
+            return 301 ${PS_DOWNLOAD_MIRROR}/$set_id;
         }
-    
-        # Otherwise, redirect to the download mirror
-        return 301 ${PS_DOWNLOAD_MIRROR}/$set_id;
+
+        # Try to download from our servers
+        try_files /app/data/osz/$set_id.osz =404;
     }
 
 
