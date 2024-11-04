@@ -33,9 +33,19 @@ server {
         proxy_pass ${CRYING_SIGMA_INTERNAL_URL}:${CRYING_SIGMA_PORT};
     }
 
-    location ~ ^/d/(.*)  {
-        return 301 ${PS_DOWNLOAD_MIRROR}/$1;
+    location ~ ^/d/([0-9]+) {
+        set $set_id $1;
+    
+        # Check if the number is greater than 999999999
+        if ($set_id ~ "^[1-9][0-9]{9,}$") {
+            # Serve from local storage
+            try_files /osz/$set_id.osz =404;
+        }
+    
+        # Otherwise, redirect to the download mirror
+        return 301 ${PS_DOWNLOAD_MIRROR}/$set_id;
     }
+
 
     location /web/replays {
         proxy_set_header X-Forwarded-For $http_CF_Connecting_IP;
