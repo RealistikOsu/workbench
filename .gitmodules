@@ -40,3 +40,12 @@
 [submodule "repos/laughing_sigma"]
 	path = repos/laughing_sigma
 	url = https://github.com/RealistikOsu/laughing-sigma
+[submodule "repos/soumetsu"]
+	path = repos/soumetsu
+	url = https://github.com/RealistikOsu/Soumetsu
+[submodule "repos/soumetsu_api"]
+	path = repos/soumetsu_api
+	url = https://github.com/RealistikOsu/Soumetsu-API
+[submodule "repos/casino"]
+	path = repos/casino
+	url = https://github.com/realistikosu/slot-machine
