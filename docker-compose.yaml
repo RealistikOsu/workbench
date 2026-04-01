@@ -1074,4 +1074,5 @@ services:
       - Bancho__UssrUrl=${USSR_INTERNAL_URL}:${USSR_PORT}
       - Bancho__Port=${BANCHO_PORT}
       - Bancho__BindAddress=0.0.0.0
-      - Bancho__DiscordRankedWebhookUrl=${PS_DISCORD_RANKED_WEBHOOK}
+      - "Bancho__DiscordRankedWebhookUrl=${PS_DISCORD_RANKED_WEBHOOK:-}"
+      - "Bancho__DiscordAdminWebhookUrl=${PS_DISCORD_ADMIN_WEBHOOK:-}"
