@@ -1,6 +1,3 @@
-[submodule "USSR"]
-	path = repos/ussr
-	url = https://github.com/RealistikOsu/USSR
 [submodule "RealistikPanel"]
 	path = repos/panel
 	url = https://github.com/RealistikOsu/RealistikPanel
@@ -10,9 +7,6 @@
 [submodule "frontend"]
 	path = repos/frontend
 	url = https://github.com/RealistikOsu/frontend
-[submodule "pep.py"]
-	path = repos/peppy
-	url = https://github.com/RealistikOsu/pep.py
 [submodule "BeatmapsService"]
 	path = repos/beatmaps_service
 	url = https://github.com/RealistikOsu/BeatmapsService

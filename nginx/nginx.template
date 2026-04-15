@@ -29,30 +29,15 @@ http {
 
     resolver 127.0.0.11;
 
-    map $http_CF_Connecting_IP $web_server {
-        "~^(${TESTING_WHITELIST_REGEX})$" 0;
-        default 1;
-    }
+    #map $http_CF_Connecting_IP $web_server {
+    #    "~^(${TESTING_WHITELIST_REGEX})$" 0;
+    #    default 1;
+    #}
 
-    map $web_server $web_port {
-        0 "${USA_PORT}";
-        1 "${USSR_PORT}";
-    }
-
-    map $web_server $web_host {
-        0 "${USA_INTERNAL_URL}";
-        1 "${USSR_INTERNAL_URL}";
-    }
-
-    map $web_server $score_submission_target {
-        0 "${USA_INTERNAL_URL}:${USA_PORT}";
-        1 "${USSR_INTERNAL_URL}:${USSR_PORT}";
-    }
-
-    map $web_server $bancho_target {
-        0 "${BANCHO_INTERNAL_URL}:${BANCHO_PORT}";
-        1 "${PEPPY_INTERNAL_URL}:${PEPPY_PORT}";
-    }
+    #map $web_server $score_submission_target {
+    #    0 "${USA_INTERNAL_URL}:${USA_PORT}";
+    #    1 "${USSR_INTERNAL_URL}:${USSR_PORT}";
+    #}
 
     include /etc/nginx/conf.d/*.conf;
 }
