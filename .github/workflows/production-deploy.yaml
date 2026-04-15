@@ -1,8 +1,8 @@
 name: production-deploy
-on:
-  push:
-    branches:
-      - master
+# on:
+#   push:
+#     branches:
+#       - master
 
 jobs:
   deploy:
