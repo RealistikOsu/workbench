@@ -1,11 +1,11 @@
 server {
     listen 80;
-    server_name c.${PS_SERVER_DOMAIN} c4.${PS_SERVER_DOMAIN};
+    server_name casino.${PS_SERVER_DOMAIN};
 
     location / {
         proxy_set_header X-Forwarded-For $http_CF_Connecting_IP;
         proxy_set_header Host $host;
         add_header Access-Control-Allow-Origin *;
-        proxy_pass $bancho_target;
+        proxy_pass ${CASINO_INTERNAL_URL}:${CASINO_PORT};
     }
 }

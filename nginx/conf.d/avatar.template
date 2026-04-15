@@ -8,8 +8,8 @@ server {
 
     location / {
         add_header cache-control "public, max-age=7200";
-        add_header content-type "image/png";
+        add_header Access-Control-Allow-Origin *;
 
-        try_files $uri $uri/ $uri.png =404;
+        try_files $uri $uri/ $uri.gif $uri.png =404;
     }
 }

@@ -49,3 +49,6 @@
 [submodule "repos/casino"]
 	path = repos/casino
 	url = https://github.com/realistikosu/slot-machine
+[submodule "repos/bancho"]
+	path = repos/bancho
+	url = https://github.com/realistikosu/realistikosu.bancho
