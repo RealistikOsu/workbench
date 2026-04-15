@@ -30,7 +30,7 @@ http {
     resolver 127.0.0.11;
 
     map $http_CF_Connecting_IP $web_server {
-        "${USA_WHITELIST_IP}" 0;
+        "~^(${TESTING_WHITELIST_REGEX})$" 0;
         default 1;
     }
 
@@ -44,9 +44,14 @@ http {
         1 "${USSR_INTERNAL_URL}";
     }
 
-    map $web_server $proxy_target {
+    map $web_server $score_submission_target {
         0 "${USA_INTERNAL_URL}:${USA_PORT}";
         1 "${USSR_INTERNAL_URL}:${USSR_PORT}";
+    }
+
+    map $web_server $bancho_target {
+        0 "${BANCHO_INTERNAL_URL}:${BANCHO_PORT}";
+        1 "${PEPPY_INTERNAL_URL}:${PEPPY_PORT}";
     }
 
     include /etc/nginx/conf.d/*.conf;

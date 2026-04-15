@@ -52,9 +52,9 @@ services:
     env_file:
       - .env
     volumes:
-      - "${DATA_SCREENSHOTS_PATH}:/app/data/screenshots"
-      - "${DATA_AVATARS_PATH}:/app/data/avatars"
-      - "${DATA_BSS_PATH}/osz:/app/data/osz"
+      - "${DATA_SCREENSHOTS_PATH}:/app/data/screenshots:ro"
+      - "${DATA_AVATARS_PATH}:/app/data/avatars:ro"
+      - "${DATA_BSS_PATH}/osz:/app/data/osz:ro"
     depends_on:
       peppy:
         condition: service_healthy
@@ -113,12 +113,6 @@ services:
   peppy:
     image: peppy:latest
     restart: always
-    labels:
-      com.datadoghq.ad.init_configs: '[{}]'
-      com.datadoghq.ad.instances: '[{"host":"%%host%%", "port": "%%port%%"}]'
-      com.datadoghq.ad.logs: '[{"source": "peppy", "service": "peppy"}]'
-      com.datadoghq.tags.env: "production"
-      com.datadoghq.tags.service: "peppy"
     depends_on:
       mysql:
         condition: service_healthy
@@ -135,8 +129,7 @@ services:
       - "${PEPPY_PORT}:${PEPPY_PORT}"
     volumes:
       - "${DATA_MAPS_PATH}:/data/maps"
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+
     environment:
       - HTTP_PORT=${PEPPY_PORT}
       - HTTP_ADDRESS=0.0.0.0
@@ -156,6 +149,7 @@ services:
       - REDIS_DB=${REDIS_DATABASE}
 
       - PERFORMANCE_SERVICE_URL=${PERFORMANCE_SERVICE_INTERNAL_URL}:${PERFORMANCE_SERVICE_PORT}
+      - USSR_URL=${USSR_INTERNAL_URL}:${USSR_PORT}
 
       - DISCORD_RANKED_WEBHOOK_URL=${PS_DISCORD_RANKED_WEBHOOK}
 
@@ -172,20 +166,9 @@ services:
       - DATA_BEATMAP_DIRECTORY=/data/maps
       - IP2LOCATION_API_KEY=${IP2LOCATION_API_KEY}
 
-      - DD_AGENT_HOST=host.docker.internal
-      - DD_SERVICE=peppy
-      - DD_ENV=production
-      - DD_LOGS_INJECTION=true
-      - DD_VERSION=4.0.0
   ussr:
     image: ussr:latest
     restart: always
-    labels:
-      com.datadoghq.ad.init_configs: '[{}]'
-      com.datadoghq.ad.instances: '[{"host":"%%host%%", "port": "%%port%%"}]'
-      com.datadoghq.ad.logs: '[{"source": "ussr", "service": "ussr"}]'
-      com.datadoghq.tags.env: "production"
-      com.datadoghq.tags.service: "ussr"
     depends_on:
       mysql:
         condition: service_healthy
@@ -202,8 +185,6 @@ services:
       interval: 2s
       timeout: 20s
       retries: 10
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
     environment:
       - HTTP_PORT=${USSR_PORT}
       
@@ -225,7 +206,7 @@ services:
       - API_KEYS_POOL=${OSU_API_KEY_POOL}
       - API_FALLBACK_URL=${USSR_API_FALLBACK_URL}
       - API_OSU_FALLBACK_URL=${USSR_OSU_FALLBACK_URL}
-      - DIRECT_URL=${BEATMAPS_SERVICE_INTERNAL_URL}:${BEATMAPS_SERVICE_PORT}/api
+      - DIRECT_URL=${BEATMAP_MIRROR_API_URL}
 
       - SERVICE_READINESS_TIMEOUT=${SERVICE_READINESS_TIMEOUT}
 
@@ -254,12 +235,6 @@ services:
       - MEILI_URL=
       - MEILI_KEY=
 
-      - DD_AGENT_HOST=host.docker.internal
-      - DD_SERVICE=ussr
-      - DD_ENV=production
-      - DD_LOGS_INJECTION=true
-      - DD_VERSION=4.0.0
-
     volumes:
       - ${DATA_REPLAYS_PATH}:/data/replays
       - ${DATA_SCREENSHOTS_PATH}:/data/screenshots
@@ -268,12 +243,6 @@ services:
   usa:
     image: usa:latest
     restart: always
-    labels:
-      com.datadoghq.ad.init_configs: '[{}]'
-      com.datadoghq.ad.instances: '[{"host":"%%host%%", "port": "%%port%%"}]'
-      com.datadoghq.ad.logs: '[{"source": "USA", "service": "USA"}]'
-      com.datadoghq.tags.env: "production"
-      com.datadoghq.tags.service: "USA"
     depends_on:
       mysql:
         condition: service_healthy
@@ -326,12 +295,6 @@ services:
   api:
     image: api:latest
     restart: always
-    labels:
-      com.datadoghq.ad.init_configs: '[{}]'
-      com.datadoghq.ad.instances: '[{"host":"%%host%%", "port": "%%port%%"}]'
-      com.datadoghq.ad.logs: '[{"source": "RippleAPI", "service": "RippleAPI"}]'
-      com.datadoghq.tags.env: "production"
-      com.datadoghq.tags.service: "RippleAPI"
     depends_on:
       mysql:
         condition: service_healthy
@@ -346,8 +309,6 @@ services:
       retries: 10
     ports:
       - "${API_PORT}:${API_PORT}"
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
     environment:
       - APP_COMPONENT=api
       - APP_ENV=production
@@ -381,12 +342,6 @@ services:
   frontend:
     image: frontend:latest
     restart: always
-    labels:
-      com.datadoghq.ad.init_configs: '[{}]'
-      com.datadoghq.ad.instances: '[{"host":"%%host%%", "port": "%%port%%"}]'
-      com.datadoghq.ad.logs: '[{"source": "frontend", "service": "frontend"}]'
-      com.datadoghq.tags.env: "production"
-      com.datadoghq.tags.service: "frontend"
     depends_on:
       mysql:
         condition: service_healthy
@@ -403,8 +358,6 @@ services:
       retries: 10
     ports:
       - "${FRONTEND_PORT}:${FRONTEND_PORT}"
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
     environment:
       - APP_COMPONENT=api
       - APP_ENV=production
@@ -452,12 +405,8 @@ services:
       - DISCORD_USER_LOOKUP_URL=${DISCORD_USER_LOOKUP_URL}
 
       - PAYPAL_EMAIL_ADDRESS=${PAYPAL_EMAIL_ADDRESS}
-
-      - DD_AGENT_HOST=host.docker.internal
-      - DD_SERVICE=peppy
-      - DD_ENV=frontend
-      - DD_LOGS_INJECTION=true
-      - DD_VERSION=4.0.0
+      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
+      - STRIPE_WEBHOOK_SECRET=${STRIPE_WEBHOOK_SECRET}
 
     volumes:
       - ${DATA_AVATARS_PATH}:/data/avatars
@@ -465,15 +414,40 @@ services:
       # quick trick because im lazy
       - ${DATA_BANNERS_PATH}:/srv/root/static/profbackgrounds:ro
 
+  casino:
+    image: casino:latest
+    restart: always
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      migrator:
+        condition: service_completed_successfully
+      api:
+        condition: service_healthy
+    healthcheck:
+      test: "curl --fail ${CASINO_INTERNAL_URL}:${CASINO_PORT}/favicon.ico"
+      interval: 2s
+      timeout: 20s
+      retries: 10
+    ports:
+      - "${CASINO_PORT}:${CASINO_PORT}"
+    environment:
+      - APP_PORT=${CASINO_PORT}
+      - MYSQL_HOST=mysql
+      - MYSQL_PORT=${MYSQL_PORT}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_POOL_SIZE=${PEPPY_MYSQL_POOL_SIZE}
+      - SESSION_SECRET=${CASINO_COOKIE_SECRET}
+      - NEXT_PUBLIC_APP_NAME=${CASINO_APP_NAME}
+      - NEXT_PUBLIC_DOMAIN=${PS_SERVER_DOMAIN}
+
   panel:
     image: panel:latest
     restart: always
-    labels:
-      com.datadoghq.ad.init_configs: '[{}]'
-      com.datadoghq.ad.instances: '[{"host":"%%host%%", "port": "%%port%%"}]'
-      com.datadoghq.ad.logs: '[{"source": "admin-panel", "service": "admin-panel"}]'
-      com.datadoghq.tags.env: "production"
-      com.datadoghq.tags.service: "admin-panel"
     depends_on:
       mysql:
         condition: service_healthy
@@ -488,8 +462,6 @@ services:
       retries: 10
     ports:
       - "${PANEL_PORT}:${PANEL_PORT}"
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
     environment:
       - USE_ENV_CONFIG=true
       
@@ -511,7 +483,9 @@ services:
       - SRV_DONOR_BADGE=${PS_DONATOR_BADGE_ID}
       - API_USSR_URL=${APP_USSR_URL}/
       - API_AVATAR_URL=${APP_AVATAR_URL}/
-      - API_BANCHO_URL=${APP_BANCHO_URL}/
+      - API_BANCHO_URL=${APP_BANCHO_URL}
+      - API_PERFORMANCE_URL=${APP_PERFORMANCE_URL}
+      - AVATARS_PATH=/avatars
       - WEBHOOK_RANKED=${PS_DISCORD_RANKED_WEBHOOK}
       - WEBHOOK_ADMIN_LOG=${PS_DISCORD_ADMIN_WEBHOOK}
 
@@ -520,16 +494,12 @@ services:
       - DD_ENV=production
       - DD_LOGS_INJECTION=true
       - DD_VERSION=4.0.0
+    volumes:
+      - "${DATA_AVATARS_PATH}:/avatars"
   
   performance-service:
     image: performance-service:latest
     restart: always
-    labels:
-      com.datadoghq.ad.init_configs: '[{}]'
-      com.datadoghq.ad.instances: '[{"host":"%%host%%", "port": "%%port%%"}]'
-      com.datadoghq.ad.logs: '[{"source": "performance-service", "service": "performance-service"}]'
-      com.datadoghq.tags.env: "production"
-      com.datadoghq.tags.service: "performance-service"
     depends_on:
       mysql:
         condition: service_healthy
@@ -544,8 +514,6 @@ services:
       retries: 10
     ports:
       - "${PERFORMANCE_SERVICE_PORT}:${PERFORMANCE_SERVICE_PORT}"
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
     environment:
       - APP_COMPONENT=api
       
@@ -568,11 +536,6 @@ services:
 
       # Enable any/all prints.
       - RUST_LOG=performance_service=debug
-      - DD_AGENT_HOST=host.docker.internal
-      - DD_SERVICE=performance-service
-      - DD_ENV=production
-      - DD_LOGS_INJECTION=true
-      - DD_VERSION=4.0.0
 
     volumes:
       - ${DATA_MAPS_PATH}:/data/maps
@@ -580,12 +543,6 @@ services:
   statistics-service:
     image: statistics-service:latest
     restart: always
-    labels:
-      com.datadoghq.ad.init_configs: '[{}]'
-      com.datadoghq.ad.instances: '[{"host":"%%host%%", "port": "%%port%%"}]'
-      com.datadoghq.ad.logs: '[{"source": "StatisticsService", "service": "StatisticsService"}]'
-      com.datadoghq.tags.env: "production"
-      com.datadoghq.tags.service: "StatisticsService"
     depends_on:
       mysql:
         condition: service_healthy
@@ -606,8 +563,6 @@ services:
       retries: 10
     ports:
       - "${STATISTICS_SERVICE_PORT}:${STATISTICS_SERVICE_PORT}"
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
     environment:
       - APP_ENV=production
       - APP_COMPONENT=api
@@ -640,15 +595,108 @@ services:
       - DD_LOGS_INJECTION=true
       - DD_VERSION=4.0.0
 
+  soumetsu:
+    image: soumetsu:latest
+    restart: always
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      soumetsu-api:
+        condition: service_started
+    ports:
+      - "${SOUMETSU_PORT}:${SOUMETSU_PORT}"
+    environment:
+      - APP_COMPONENT=api
+      - SOUMETSU_ENV=production
+      - SOUMETSU_PORT=${SOUMETSU_PORT}
+      - SOUMETSU_COOKIE_SECRET=${COOKIE_SECRET}
+      - SOUMETSU_KEY=${HANAYO_KEY}
+      - SOUMETSU_API_URL=${APP_NEW_API_URL}
+      - SOUMETSU_BASE_URL=${APP_NEW_BASE_URL}
+      - SOUMETSU_AVATAR_URL=${APP_AVATAR_URL}
+      # - APP_API_URL=${APP_API_URL}
+      - SOUMETSU_BANCHO_URL=${APP_BANCHO_URL}
+
+      - SOUMETSU_BEATMAP_MIRROR_API_URL=${BEATMAP_MIRROR_API_URL}
+      - SOUMETSU_BEATMAP_DOWNLOAD_MIRROR_URL=${BEATMAP_DOWNLOAD_MIRROR_URL}
+
+      - DISCORD_SERVER_URL=${DISCORD_SERVER_URL}
+      - DISCORD_APP_CLIENT_ID=${DISCORD_APP_CLIENT_ID}
+      - DISCORD_APP_CLIENT_SECRET=${DISCORD_APP_CLIENT_SECRET}
+
+      - MAILGUN_DOMAIN=${MAILGUN_DOMAIN}
+      - MAILGUN_API_KEY=${MAILGUN_API_KEY}
+      - MAILGUN_PUBLIC_KEY=${MAILGUN_PUBLIC_KEY}
+      - MAILGUN_FROM=${MAILGUN_FROM}
+
+      - RECAPTCHA_SITE_KEY=${RECAPTCHA_SITE_KEY}
+      - RECAPTCHA_SECRET_KEY=${RECAPTCHA_SECRET_KEY}
+
+      - IP_LOOKUP_URL=${IP_LOOKUP_URL}
+      - DISCORD_USER_LOOKUP_URL=${DISCORD_USER_LOOKUP_URL}
+
+      - PAYPAL_EMAIL_ADDRESS=${PAYPAL_EMAIL_ADDRESS}
+
+      # Database
+      - MYSQL_HOST=mysql
+      - MYSQL_TCP_PORT=${MYSQL_PORT}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+
+      # Redis
+      - REDIS_HOST=redis
+      - REDIS_PORT=${REDIS_PORT}
+      - REDIS_PASS=${REDIS_PASSWORD}
+      - REDIS_DB=${REDIS_DATABASE}
+      - REDIS_MAX_CONNECTIONS=15
+      - REDIS_USE_SSL=false
+      - REDIS_NETWORK_TYPE=tcp
+
+      - SOUMETSU_INTERNAL_AVATARS_PATH=/relesto
+      - SOUMETSU_INTERNAL_BANNERS_PATH=/whore
+
+  soumetsu-api:
+    image: soumetsu-api:latest
+    restart: always
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    ports:
+      - "${SOUMETSU_API_PORT}:${SOUMETSU_API_PORT}"
+    environment:
+      - APP_COMPONENT=fastapi
+      - APP_HTTP_PORT=${SOUMETSU_API_PORT}
+      
+      - SOUMETSUAPI_STORAGE_PATH=/data
+
+      - SOUMETSU_HCAPTCHA_SECRET_KEY=${RECAPTCHA_SECRET_KEY}
+      - SOUMETSU_HCAPTCHA_ENABLED=true
+      
+      # MySQL
+      - MYSQL_HOST=mysql
+      - MYSQL_TCP_PORT=${MYSQL_PORT}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+
+      # Redis (assuming standard names or checking config if needed, defaulting to standard)
+      - REDIS_HOST=redis
+      - REDIS_PORT=${REDIS_PORT}
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - REDIS_DATABASE=${REDIS_DATABASE}
+
+    volumes:
+      - "${DATA_BANNERS_PATH}:/data/banners"
+      - "${DATA_AVATARS_PATH}:/data/avatars"
+
   beatmaps-service:
     image: beatmaps-service:latest
     restart: always
-    labels:
-      com.datadoghq.ad.init_configs: '[{}]'
-      com.datadoghq.ad.instances: '[{"host":"%%host%%", "port": "%%port%%"}]'
-      com.datadoghq.ad.logs: '[{"source": "BeatmapsService", "service": "BeatmapsService"}]'
-      com.datadoghq.tags.env: "production"
-      com.datadoghq.tags.service: "BeatmapsService"
     depends_on:
       redis:
         condition: service_healthy
@@ -659,36 +707,20 @@ services:
       retries: 10
     ports:
       - "${BEATMAPS_SERVICE_PORT}:${BEATMAPS_SERVICE_PORT}"
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
     environment:
       - APP_ENV=production
       - ServiceHost=0.0.0.0
       - ServicePort=${BEATMAPS_SERVICE_PORT}
       - ClientId=${OSU_CLIENT_ID}
       - ClientSecret=${OSU_CLIENT_SECRET}
-      # ?
       - RedisConnectionString=redis:${REDIS_PORT}
-      - DD_AGENT_HOST=host.docker.internal
-      - DD_SERVICE=beatmaps-service
-      - DD_ENV=production
-      - DD_LOGS_INJECTION=true
-      - DD_VERSION=4.0.0
 
   donor-bot:
     image: donor-bot:latest
     restart: always
-    labels:
-      com.datadoghq.ad.init_configs: '[{}]'
-      com.datadoghq.ad.instances: '[{"host":"%%host%%", "port": "%%port%%"}]'
-      com.datadoghq.ad.logs: '[{"source": "DonorBot", "service": "DonorBot"}]'
-      com.datadoghq.tags.env: "production"
-      com.datadoghq.tags.service: "DonorBot"
     depends_on:
       mysql:
         condition: service_healthy
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
     environment:
       - APP_ENV=production
       - APP_COMPONENT=bot
@@ -722,12 +754,6 @@ services:
   statistics-service-online-cron:
     image: statistics-service:latest
     restart: always
-    labels:
-      com.datadoghq.ad.init_configs: '[{}]'
-      com.datadoghq.ad.instances: '[{"host":"%%host%%", "port": "%%port%%"}]'
-      com.datadoghq.ad.logs: '[{"source": "StatisticsServiceCron-Online", "service": "StatisticsServiceCron-Online"}]'
-      com.datadoghq.tags.env: "production"
-      com.datadoghq.tags.service: "StatisticsServiceCron-Online"
     depends_on:
       mysql:
         condition: service_healthy
@@ -760,22 +786,10 @@ services:
       - SERVICE_READINESS_TIMEOUT=${SERVICE_READINESS_TIMEOUT}
 
       - LOG_LEVEL=10
-
-      - DD_AGENT_HOST=host.docker.internal
-      - DD_SERVICE=statistics-service-online
-      - DD_ENV=production
-      - DD_LOGS_INJECTION=true
-      - DD_VERSION=4.0.0
   
   statistics-service-profile-graphs-cron:
     image: statistics-service:latest
     restart: always
-    labels:
-      com.datadoghq.ad.init_configs: '[{}]'
-      com.datadoghq.ad.instances: '[{"host":"%%host%%", "port": "%%port%%"}]'
-      com.datadoghq.ad.logs: '[{"source": "StatisticsServiceCron-Graphs", "service": "StatisticsServiceCron-Graphs"}]'
-      com.datadoghq.tags.env: "production"
-      com.datadoghq.tags.service: "StatisticsServiceCron-Graphs"
     depends_on:
       mysql:
         condition: service_healthy
@@ -783,8 +797,6 @@ services:
         condition: service_healthy
       migrator:
         condition: service_completed_successfully
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
     environment:
       - APP_ENV=production
       - APP_COMPONENT=profile_graphs_cron
@@ -811,21 +823,9 @@ services:
 
       - LOG_LEVEL=10
 
-      - DD_AGENT_HOST=host.docker.internal
-      - DD_SERVICE=statistics-service-graphs
-      - DD_ENV=production
-      - DD_LOGS_INJECTION=true
-      - DD_VERSION=4.0.0
-
   statistics-service-top-scores-cron:
     image: statistics-service:latest
     restart: always
-    labels:
-      com.datadoghq.ad.init_configs: '[{}]'
-      com.datadoghq.ad.instances: '[{"host":"%%host%%", "port": "%%port%%"}]'
-      com.datadoghq.ad.logs: '[{"source": "StatisticsServiceCron-Top", "service": "StatisticsServiceCron-Top"}]'
-      com.datadoghq.tags.env: "production"
-      com.datadoghq.tags.service: "StatisticsServiceCron-Top"
     depends_on:
       mysql:
         condition: service_healthy
@@ -833,8 +833,6 @@ services:
         condition: service_healthy
       migrator:
         condition: service_completed_successfully
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
     environment:
       - APP_ENV=production
       - APP_COMPONENT=top_scores_cron
@@ -860,12 +858,6 @@ services:
       - SERVICE_READINESS_TIMEOUT=${SERVICE_READINESS_TIMEOUT}
 
       - LOG_LEVEL=10
-
-      - DD_AGENT_HOST=host.docker.internal
-      - DD_SERVICE=statistics-service-top
-      - DD_ENV=production
-      - DD_LOGS_INJECTION=true
-      - DD_VERSION=4.0.0
 
   cron:
     image: rosu-cron:latest
@@ -919,3 +911,31 @@ services:
 
     volumes:
       - ${DATA_BSS_PATH}:/data
+
+  bancho:
+    image: bancho:latest
+    restart: always
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      migrator:
+        condition: service_completed_successfully
+    ports:
+      - "${BANCHO_PORT}:${BANCHO_PORT}"
+    environment:
+      - ConnectionStrings__Default=Server=mysql;Port=${MYSQL_PORT};Database=${MYSQL_DATABASE};User Id=${MYSQL_USER};Pwd=${MYSQL_PASSWORD};
+      - Bancho__ServerName=${PS_SERVER_NAME}
+      - Bancho__Domain=c.${PS_SERVER_DOMAIN}
+      - Bancho__BotUsername=${PS_SERVER_BOT_NAME}
+      - Bancho__BotUserId=${PS_SERVER_BOT_USER_ID}
+      - Bancho__MinimumClientYear=${PEPPY_MINIMUM_CLIENT_YEAR}
+      - Bancho__RedisConnectionString=redis:${REDIS_PORT}
+      - Bancho__Ip2LocationApiKey=${IP2LOCATION_API_KEY}
+      - Bancho__PerformanceServiceUrl=${PERFORMANCE_SERVICE_INTERNAL_URL}:${PERFORMANCE_SERVICE_PORT}
+      - Bancho__UssrUrl=${USSR_INTERNAL_URL}:${USSR_PORT}
+      - Bancho__Port=${BANCHO_PORT}
+      - Bancho__BindAddress=0.0.0.0
+      - "Bancho__DiscordRankedWebhookUrl=${PS_DISCORD_RANKED_WEBHOOK:-}"
+      - "Bancho__DiscordAdminWebhookUrl=${PS_DISCORD_ADMIN_WEBHOOK:-}"

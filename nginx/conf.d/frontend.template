@@ -11,18 +11,21 @@ server {
     location /api {
         proxy_set_header X-Forwarded-For $http_CF_Connecting_IP;
         proxy_set_header Host $host;
+        add_header Access-Control-Allow-Origin *;
         proxy_pass ${API_INTERNAL_URL}:${API_PORT};
     }
 
     location ~ /api/v1/profile-history {
         proxy_set_header X-Forwarded-For $http_CF_Connecting_IP;
         proxy_set_header Host $host;
+        add_header Access-Control-Allow-Origin *;
         proxy_pass ${STATISTICS_SERVICE_INTERNAL_URL}:${STATISTICS_SERVICE_PORT};
     }
 
     location ~ /api/v1/statistics/homepage {
         proxy_set_header X-Forwarded-For $http_CF_Connecting_IP;
         proxy_set_header Host $host;
+        add_header Access-Control-Allow-Origin *;
         proxy_pass ${STATISTICS_SERVICE_INTERNAL_URL}:${STATISTICS_SERVICE_PORT};
     }
 
@@ -36,20 +39,95 @@ server {
     location ~ ^/d/([0-9]+) {
         set $set_id $1;
     
-        # Check if the number is greater than 999999999
+        # Check if the number is not greater than 999999999
         if ($set_id !~ "^[1-9][0-9]{9,}$") {
             # Redirect to the download mirror
             return 301 ${PS_DOWNLOAD_MIRROR}/$set_id;
         }
 
+        root /app/data/osz;
+        add_header content-type "application/x-osu-beatmap-archive";
+        add_header content-disposition "attachment; filename=$set_id.osz";
+
         # Try to download from our servers
-        try_files /app/data/osz/$set_id.osz =404;
+        try_files /$set_id.osz =404;
     }
 
 
     location /web/replays {
         proxy_set_header X-Forwarded-For $http_CF_Connecting_IP;
         proxy_set_header Host $host;
-        proxy_pass $proxy_target;
+        proxy_pass $score_submission_target;
+    }
+}
+
+
+server {
+    listen 80;
+    server_name new.${PS_SERVER_DOMAIN};
+
+    location / {
+        proxy_set_header X-Forwarded-For $http_CF_Connecting_IP;
+        proxy_set_header Host $host;
+        proxy_pass ${SOUMETSU_INTERNAL_URL}:${SOUMETSU_PORT};
+    }
+
+    location /api {
+        proxy_set_header X-Forwarded-For $http_CF_Connecting_IP;
+        proxy_set_header Host $host;
+        add_header Access-Control-Allow-Origin *;
+        proxy_pass ${API_INTERNAL_URL}:${API_PORT};
+    }
+
+    location ~ /api/v2 {
+        proxy_set_header X-Forwarded-For $http_CF_Connecting_IP;
+        proxy_set_header Host $host;
+        add_header Access-Control-Allow-Origin *;
+        proxy_pass ${SOUMETSU_API_INTERNAL_URL}:${SOUMETSU_API_PORT};
+    }
+
+    location ~ /api/v1/profile-history {
+        proxy_set_header X-Forwarded-For $http_CF_Connecting_IP;
+        proxy_set_header Host $host;
+        add_header Access-Control-Allow-Origin *;
+        proxy_pass ${STATISTICS_SERVICE_INTERNAL_URL}:${STATISTICS_SERVICE_PORT};
+    }
+
+    location ~ /api/v1/statistics/homepage {
+        proxy_set_header X-Forwarded-For $http_CF_Connecting_IP;
+        proxy_set_header Host $host;
+        add_header Access-Control-Allow-Origin *;
+        proxy_pass ${STATISTICS_SERVICE_INTERNAL_URL}:${STATISTICS_SERVICE_PORT};
+    }
+
+    location ~ /api/v1/patcher {
+        proxy_set_header X-Forwarded-For $http_CF_Connecting_IP;
+        proxy_set_header Host $host;
+        add_header Access-Control-Allow-Origin *;
+        proxy_pass ${CRYING_SIGMA_INTERNAL_URL}:${CRYING_SIGMA_PORT};
+    }
+
+    location ~ ^/d/([0-9]+) {
+        set $set_id $1;
+    
+        # Check if the number is not greater than 999999999
+        if ($set_id !~ "^[1-9][0-9]{9,}$") {
+            # Redirect to the download mirror
+            return 301 ${PS_DOWNLOAD_MIRROR}/$set_id;
+        }
+
+        root /app/data/osz;
+        add_header content-type "application/x-osu-beatmap-archive";
+        add_header content-disposition "attachment; filename=$set_id.osz";
+
+        # Try to download from our servers
+        try_files /$set_id.osz =404;
+    }
+
+
+    location /web/replays {
+        proxy_set_header X-Forwarded-For $http_CF_Connecting_IP;
+        proxy_set_header Host $host;
+        proxy_pass $score_submission_target;
     }
 }
