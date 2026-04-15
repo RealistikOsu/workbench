@@ -10,8 +10,6 @@ stop:
 
 build:
 	docker build ./nginx -t rosu-nginx:latest
-	docker build ./repos/peppy -t peppy:latest
-	docker build ./repos/ussr -t ussr:latest
 	docker build ./repos/usa -t usa:latest
 	docker build ./repos/api -t api:latest
 	docker build ./repos/frontend -t frontend:latest
