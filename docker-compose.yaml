@@ -802,7 +802,7 @@ services:
       - Bancho__RedisConnectionString=redis:${REDIS_PORT}
       - Bancho__Ip2LocationApiKey=${IP2LOCATION_API_KEY}
       - Bancho__PerformanceServiceUrl=${PERFORMANCE_SERVICE_INTERNAL_URL}:${PERFORMANCE_SERVICE_PORT}
-      - Bancho__UssrUrl=${USSR_INTERNAL_URL}:${USSR_PORT}
+      - Bancho__UsaUrl=${USA_INTERNAL_URL}:${USA_PORT}
       - Bancho__Port=${BANCHO_PORT}
       - Bancho__BindAddress=0.0.0.0
       - "Bancho__DiscordRankedWebhookUrl=${PS_DISCORD_RANKED_WEBHOOK:-}"
