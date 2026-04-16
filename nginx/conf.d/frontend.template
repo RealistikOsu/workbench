@@ -57,7 +57,7 @@ server {
     location /web/replays {
         proxy_set_header X-Forwarded-For $http_CF_Connecting_IP;
         proxy_set_header Host $host;
-        proxy_pass $score_submission_target;
+        proxy_pass ${USA_INTERNAL_URL}:${USA_PORT};
     }
 }
 
@@ -128,6 +128,6 @@ server {
     location /web/replays {
         proxy_set_header X-Forwarded-For $http_CF_Connecting_IP;
         proxy_set_header Host $host;
-        proxy_pass $score_submission_target;
+        proxy_pass ${USA_INTERNAL_URL}:${USA_PORT};
     }
 }
