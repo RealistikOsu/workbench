@@ -1,4 +1,4 @@
-FROM nginx
+FROM nginx:1.27.3-alpine
 
 WORKDIR /
 COPY ./fill_variables.sh /fill_variables.sh
